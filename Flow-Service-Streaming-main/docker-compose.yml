@@ -1,0 +1,55 @@
+version: "3.3"
+
+services:
+
+
+  greeter:
+    build:
+      context: .
+    image: Flow-Service-Streaming
+    env_file: docker-compose.env
+    environment:
+      SERVICES: greeter
+    depends_on:
+      - nats
+      - redis
+    networks:
+      - internal
+
+  products:
+    build:
+      context: .
+    image: Flow-Service-Streaming
+    env_file: docker-compose.env
+    environment:
+      SERVICES: products
+    depends_on:
+      - mongo
+      - nats
+      - redis
+    networks:
+      - internal
+
+  mongo:
+    image: mongo:4
+    volumes:
+      - data:/data/db
+    networks:
+      - internal
+
+  nats:
+    image: nats:2
+    networks:
+      - internal
+
+  redis:
+    image: redis:alpine
+    networks:
+      - internal
+
+
+networks:
+  internal:
+
+volumes:
+  data:
